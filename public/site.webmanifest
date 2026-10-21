@@ -1,0 +1,14 @@
+{
+  "name": "Chiaki-UCR",
+  "short_name": "Chiaki-UCR",
+  "description": "Ratón y teclado como DualSense virtual para chiaki-ng en macOS.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#16120e",
+  "theme_color": "#16120e",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
