@@ -96,6 +96,10 @@ export const faq = [
     a: 'Sí. Todos los controles y sensibilidades se ajustan en tiempo real desde el panel de la app, y hay perfiles rápidos para Arc Raiders y GTA V.',
   },
   {
+    q: '¿Es baneable en competitivo online?',
+    a: 'Chiaki-UCR emula un mando DualSense legítimo a través de chiaki-ng, por lo que el sistema recibe entradas de mando estándar. Sin embargo, en partidas competitivas o multijugador online, ciertas desarrolladoras consideran la emulación de teclado y ratón como una ventaja indebida o una infracción de sus términos de servicio, con riesgo potencial de sanción o baneo. Te recomendamos consultar las políticas de cada juego y usar la herramienta con prudencia y bajo tu propia responsabilidad.',
+  },
+  {
     q: '¿Cuánto cuesta?',
     a: 'Nada. Es código abierto con licencia MIT. Si te sirve, puedes apoyarlo con una donación en PayPal.',
   },

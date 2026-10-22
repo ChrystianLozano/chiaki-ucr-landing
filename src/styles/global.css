@@ -222,6 +222,28 @@ pre::before { content: '$ '; color: var(--ink-dim); }
 .install .btn { border-color: #1a130b; color: #1a130b; }
 .install .btn.primary { background: var(--orange); border-color: #1a130b; }
 .install .btn:hover { box-shadow: 6px 6px 0 #1a130b; }
+.install-notice {
+  margin-top: 36px;
+  padding: 18px 22px;
+  background: rgba(26, 19, 11, 0.05);
+  border-left: 6px solid var(--orange);
+}
+.install-notice .notice-tag {
+  display: block;
+  font-family: var(--mono);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #a84300;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.install-side .install-notice p {
+  margin-top: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #3b2d1f;
+}
 
 /* faq */
 .faq-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(32px, 5vw, 96px); }
