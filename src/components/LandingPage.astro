@@ -1,0 +1,414 @@
+---
+import '../styles/global.css';
+import {
+  REPO,
+  RELEASES,
+  DONATE,
+  CHIAKI_NG,
+  SITE,
+  translations,
+  type Lang,
+} from '../data';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = translations[lang];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const canonicalUrl = lang === 'es' ? `${SITE}/` : `${SITE}/en/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Chiaki-UCR',
+  description: t.meta.jsonLdDescription,
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'macOS 13+',
+  inLanguage: lang,
+  url: canonicalUrl,
+  image: `${SITE}/img/og.png`,
+  license: 'https://opensource.org/licenses/MIT',
+  downloadUrl: RELEASES,
+  codeRepository: REPO,
+  author: { '@type': 'Person', name: 'Chrystian Lozano', url: 'https://github.com/ChrystianLozano' },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <meta name="author" content="Chrystian Lozano" />
+    <meta name="theme-color" content="#16120e" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="es" href={`${SITE}/`} />
+    <link rel="alternate" hreflang="en" href={`${SITE}/en/`} />
+    <link rel="alternate" hreflang="x-default" href={`${SITE}/`} />
+    <link rel="sitemap" type="application/xml" href={`${SITE}/sitemap.xml`} />
+
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${base}/favicon-32x32.png`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${base}/apple-touch-icon.png`} />
+    <link rel="manifest" href={`${base}/site.webmanifest`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Chiaki-UCR" />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={t.meta.ogTitle} />
+    <meta property="og:description" content={t.meta.ogDescription} />
+    <meta property="og:image" content={`${SITE}/img/og.png`} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={t.meta.ogImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@mudo_" />
+    <meta name="twitter:creator" content="@mudo_" />
+    <meta name="twitter:title" content={t.meta.twitterTitle} />
+    <meta name="twitter:description" content={t.meta.twitterDescription} />
+    <meta name="twitter:image" content={`${SITE}/img/og.png`} />
+    <meta name="twitter:image:alt" content={t.meta.twitterImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    {lang === 'es' ? (
+      <script is:inline define:vars={{ base }}>
+        (function() {
+          try {
+            var preferred = localStorage.getItem('preferred_lang');
+            if (preferred === 'es') return;
+            if (preferred === 'en') {
+              location.replace((base || '') + '/en/' + location.hash);
+              return;
+            }
+            var navLangs = navigator.languages || [navigator.language || navigator.userLanguage || ''];
+            var isSpanish = false;
+            for (var i = 0; i < navLangs.length; i++) {
+              var l = (navLangs[i] || '').toLowerCase();
+              if (l.indexOf('es') === 0) {
+                isSpanish = true;
+                break;
+              }
+            }
+            if (!isSpanish) {
+              location.replace((base || '') + '/en/' + location.hash);
+            }
+          } catch (e) {}
+        })();
+      </script>
+    ) : (
+      <script is:inline define:vars={{ base }}>
+        (function() {
+          try {
+            var preferred = localStorage.getItem('preferred_lang');
+            if (preferred === 'es') {
+              location.replace((base || '') + '/' + location.hash);
+              return;
+            }
+          } catch (e) {}
+        })();
+      </script>
+    )}
+
+    <script is:inline>
+      document.addEventListener('click', function(e) {
+        var el = e.target && e.target.closest ? e.target.closest('[data-lang-choice]') : null;
+        if (el) {
+          var langChoice = el.getAttribute('data-lang-choice');
+          if (langChoice) {
+            try {
+              localStorage.setItem('preferred_lang', langChoice);
+            } catch (err) {}
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap">
+        <a class="brand" href="#top">
+          <img src={`${base}/img/logo.png`} alt="" width="44" height="44" />Chiaki-UCR
+        </a>
+        <a class="link" href="#modulos">{t.nav.modules}</a>
+        <a class="link" href="#teclas">{t.nav.keys}</a>
+        <a class="link" href="#instalar">{t.nav.install}</a>
+        <div class="lang-switch" role="navigation" aria-label="Language selector">
+          {lang === 'es' ? (
+            <span class="active" aria-current="page">ES</span>
+          ) : (
+            <a href={`${base}/`} data-lang-choice="es" title="Versión en español">ES</a>
+          )}
+          <span class="sep" aria-hidden="true">/</span>
+          {lang === 'en' ? (
+            <span class="active" aria-current="page">EN</span>
+          ) : (
+            <a href={`${base}/en/`} data-lang-choice="en" title="English version">EN</a>
+          )}
+        </div>
+        <a class="btn small primary" href={RELEASES}>{t.nav.download}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <h1 class="title">
+              {t.hero.titleLine1} <span>{t.hero.titleLine2}</span>
+            </h1>
+            <p class="lede">{t.hero.lede}</p>
+            <div class="cta">
+              <a class="btn primary" href={RELEASES}>{t.hero.downloadBtn}</a>
+              <a class="btn" href={REPO}>{t.hero.githubBtn}</a>
+            </div>
+            <p class="spec">
+              <span><b>M1–M4</b> {t.hero.specSilicon}</span>
+              <span><b>13+</b> {t.hero.specOs}</span>
+              <span><b>MIT</b> {t.hero.specLicense}</span>
+            </p>
+          </div>
+          <figure class="badge-art">
+            <div class="badge-screen">
+              <div class="bands" aria-hidden="true">
+                <div class="diag"><i></i><i></i><i></i><i></i></div>
+              </div>
+              <img
+                src={`${base}/img/logo.png`}
+                alt={t.hero.badgeAlt}
+                width="500"
+                height="500"
+              />
+            </div>
+            <figcaption class="badge-bar">
+              <span>{t.hero.badgeLeft}</span>
+              <span>{t.hero.badgeRight}</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          {[...t.ticker, ...t.ticker, ...t.ticker, ...t.ticker].map((item) => (
+            <span>{item}</span>
+          ))}
+        </div>
+      </div>
+
+      <!-- MODULES -->
+      <section id="modulos">
+        <div class="wrap">
+          <div class="sec-head rv">
+            <h2 class="sec">{t.modules.title}</h2>
+            <p>{t.modules.desc}</p>
+          </div>
+          <ul class="mods">
+            {t.modules.items.map((f) => (
+              <li class="mod rv">
+                <h3>{f.title}</h3>
+                <span class="tag">{f.tag}</span>
+                <p>{f.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <!-- SHOWCASE -->
+      <section class="showcase">
+        <div class="wrap">
+          <div class="sec-head rv">
+            <h2 class="sec">{t.showcase.title}</h2>
+            <p>{t.showcase.desc}</p>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <div class="shot" data-ui>
+            <div class="shot-scroll">
+              <div class="shot-crop">
+                <img
+                  src={`${base}/img/app.png`}
+                  alt={t.showcase.imgAlt}
+                  width="952"
+                  height="726"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <p class="shot-hint">{t.showcase.hint}</p>
+          </div>
+          <div class="callouts">
+            <div>
+              <b>{t.showcase.callout1Title}</b>
+              {t.showcase.callout1Body}
+            </div>
+            <div>
+              <b>{t.showcase.callout2Title}</b>
+              {t.showcase.callout2Body}
+            </div>
+            <div>
+              <b>{t.showcase.callout3Title}</b>
+              {t.showcase.callout3Body}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RAIDER BANNER -->
+      <section class="raider" style="padding-block:0;margin-top:clamp(80px,12vw,180px)">
+        <img
+          src={`${base}/img/raider.png`}
+          alt={t.raider.imgAlt}
+          width="1024"
+          height="571"
+          loading="lazy"
+        />
+        <span class="raider-tag">{t.raider.tag}</span>
+        <div class="raider-cap">
+          <h2>{t.raider.title}</h2>
+          <p>{t.raider.desc}</p>
+        </div>
+      </section>
+
+      <!-- MAPPING -->
+      <section id="teclas">
+        <div class="wrap">
+          <div class="sec-head rv">
+            <h2 class="sec">{t.mapping.title}</h2>
+            <p>{t.mapping.desc}</p>
+          </div>
+          <div class="map-split">
+            <div class="map-wrap rv">
+              <table>
+                <caption>{t.mapping.caption}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">{t.mapping.colPad}</th>
+                    <th scope="col">{t.mapping.colAction}</th>
+                    <th scope="col">{t.mapping.colKey}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {t.mapping.items.map((m) => (
+                    <tr>
+                      <td>{m.pad}</td>
+                      <td>{m.does}</td>
+                      <td>
+                        {m.keys.split(' ').every((k) => k.length === 1) ? (
+                          m.keys.split(' ').map((k) => <kbd>{k}</kbd>)
+                        ) : (
+                          <kbd>{m.keys}</kbd>
+                        )}
+                        {m.note && <span class="dim">{m.note}</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div class="hotkeys">
+              {t.mapping.hotkeys.map((h) => (
+                <div class="hotkey rv">
+                  <h3>{h.title}</h3>
+                  <p>{h.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INSTALL -->
+      <section id="instalar" class="install">
+        <div class="wrap install-grid">
+          <div class="install-side rv">
+            <h2 class="sec">{t.install.title}</h2>
+            <p>{t.install.desc}</p>
+            <div class="cta">
+              <a class="btn primary" href={RELEASES}>{t.install.downloadBtn}</a>
+              <a class="btn" href={CHIAKI_NG}>{t.install.getChiakiBtn}</a>
+            </div>
+            <div class="install-notice">
+              <span class="notice-tag">{t.install.noticeTag}</span>
+              <p>{t.install.noticeBody}</p>
+            </div>
+          </div>
+          <ol class="steps">
+            {t.install.steps.map((s) => (
+              <li class="rv">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+                {s.code && <pre><code>{s.code}</code></pre>}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <div class="wrap faq-grid">
+          <h2 class="sec rv">{t.faq.title}</h2>
+          <div class="faq-list">
+            {t.faq.items.map((f, i) => (
+              <details class="rv" open={i === 0}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="stripes"><i></i><i></i><i></i><i></i></div>
+      <div class="wrap">
+        <div class="foot-top" style="padding-top:72px">
+          <p>{t.footer.note}</p>
+          <div class="foot-links">
+            <a class="btn primary" href={DONATE}>{t.footer.donateBtn}</a>
+            <a class="btn" href={REPO}>{t.footer.githubBtn}</a>
+            <a class="btn" href={`mailto:${t.footer.email}`}>{t.footer.email}</a>
+          </div>
+        </div>
+      </div>
+      <div class="megaword" aria-hidden="true">Chiaki-UCR</div>
+      <div class="foot-bot">
+        <div class="wrap">
+          <span>{t.footer.bot1}</span>
+          <span>{t.footer.bot2}</span>
+          <span>{t.footer.bot3}</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        }),
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll<HTMLElement>('.rv').forEach((el, i) => {
+        el.style.transitionDelay = `${(i % 4) * 70}ms`;
+        io.observe(el);
+      });
+    </script>
+  </body>
+</html>

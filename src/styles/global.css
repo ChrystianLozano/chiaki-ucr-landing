@@ -61,6 +61,38 @@ body::after {
 .nav a.link { text-decoration: none; font-family: var(--mono); font-size: 17px; text-transform: uppercase; color: var(--ink-dim); }
 .nav a.link:hover { color: var(--orange); }
 
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 15px;
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 2px solid var(--panel-2);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.lang-switch a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color .12s;
+}
+.lang-switch a:hover {
+  color: var(--orange);
+}
+.lang-switch span.active {
+  color: var(--yellow);
+  font-weight: 700;
+  border-bottom: 2px solid var(--orange);
+}
+.lang-switch .sep {
+  color: var(--ink-dim);
+  opacity: .4;
+  user-select: none;
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; gap: 12px;
@@ -271,7 +303,12 @@ footer { padding-top: 96px; background: var(--ground); overflow: hidden; }
 
 @media (max-width: 960px) {
   body { font-size: 17px; }
+  .nav .wrap { gap: 12px; }
   .nav a.link { display: none; }
+  .brand { font-size: 18px; gap: 8px; }
+  .brand img { width: 36px; height: 36px; }
+  .lang-switch { padding: 4px 8px; font-size: 13px; gap: 6px; }
+  .btn.small { padding: 8px 12px; font-size: 14px; }
   .hero-grid, .sec-head, .map-split, .install-grid, .faq-grid { grid-template-columns: minmax(0, 1fr); }
   .hero-grid > *, .sec-head > *, .map-split > *, .install-grid > *, .faq-grid > * { min-width: 0; }
   table, tbody, tr, td { display: block; }
