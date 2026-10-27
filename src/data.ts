@@ -80,6 +80,18 @@ export interface Translation {
     callout3Title: string;
     callout3Body: string;
   };
+  profiles: {
+    sectionTag: string;
+    items: Array<{
+      id: string;
+      tag: string;
+      title: string;
+      desc: string;
+      imgAlt: string;
+      imgSrc: string;
+      theme: 'orange' | 'cyan';
+    }>;
+  };
   raider: {
     tag: string;
     title: string;
@@ -212,6 +224,29 @@ export const translations: Record<Lang, Translation> = {
       callout2Body: 'Sticks y gatillos sincronizados por memoria compartida.',
       callout3Title: 'Mapeo completo',
       callout3Body: 'Cada botón del DualSense con su tecla, editable.',
+    },
+    profiles: {
+      sectionTag: 'Perfiles Rápidos',
+      items: [
+        {
+          id: 'arc-raiders',
+          tag: 'Perfil activo: Arc Raiders',
+          title: 'Teclado y ratón en consola',
+          desc: 'Un perfil de shooter listo para Arc Raiders: apuntado fino, ADS con clic derecho y rueda de armas con Q.',
+          imgAlt: 'Jugadora con casco y gafas jugando con teclado y ratón junto a una PS5 en una cabaña de madera',
+          imgSrc: '/img/raider.png',
+          theme: 'orange',
+        },
+        {
+          id: 'gta-6',
+          tag: 'Perfil activo: GTA VI',
+          title: 'Precisión en Vice City',
+          desc: 'Perfil optimizado para GTA VI: apuntado instantáneo a pie, control analógico para vehículos y acceso rápido al dial de armas.',
+          imgAlt: 'Jugador jugando GTA VI con teclado y ratón frente a su PS5 en un salón soleado',
+          imgSrc: '/img/gta6.png',
+          theme: 'cyan',
+        },
+      ],
     },
     raider: {
       tag: 'Perfil activo: Arc Raiders',
@@ -416,6 +451,29 @@ export const translations: Record<Lang, Translation> = {
       callout2Body: 'Sticks and triggers synchronized via POSIX shared memory.',
       callout3Title: 'Full Mapping',
       callout3Body: 'Every DualSense button bound to a key, fully customizable.',
+    },
+    profiles: {
+      sectionTag: 'Quick Profiles',
+      items: [
+        {
+          id: 'arc-raiders',
+          tag: 'Active Profile: Arc Raiders',
+          title: 'Keyboard and mouse on console',
+          desc: 'A shooter profile ready for Arc Raiders: fine-tuned aiming, right-click ADS, and Q weapon wheel.',
+          imgAlt: 'Gamer wearing helmet and goggles playing with keyboard and mouse next to a PS5 in a cabin',
+          imgSrc: '/img/raider.png',
+          theme: 'orange',
+        },
+        {
+          id: 'gta-6',
+          tag: 'Active Profile: GTA VI',
+          title: 'Precision in Vice City',
+          desc: 'Optimized profile for GTA VI: snap aiming on foot, analog vehicle control, and instant weapon wheel access.',
+          imgAlt: 'Gamer playing GTA VI with keyboard and mouse next to a PS5 in a sunlit room',
+          imgSrc: '/img/gta6.png',
+          theme: 'cyan',
+        },
+      ],
     },
     raider: {
       tag: 'Active Profile: Arc Raiders',

@@ -265,19 +265,63 @@ const jsonLd = {
         </div>
       </section>
 
-      <!-- RAIDER BANNER -->
-      <section class="raider" style="padding-block:0;margin-top:clamp(80px,12vw,180px)">
-        <img
-          src={`${base}/img/raider.png`}
-          alt={t.raider.imgAlt}
-          width="1024"
-          height="571"
-          loading="lazy"
-        />
-        <span class="raider-tag">{t.raider.tag}</span>
-        <div class="raider-cap">
-          <h2>{t.raider.title}</h2>
-          <p>{t.raider.desc}</p>
+      <!-- PROFILE SHOWCASE CAROUSEL -->
+      <section class="raider profile-carousel" id="perfiles" style="padding-block:0;margin-top:clamp(80px,12vw,180px)" aria-roledescription="carousel" aria-label={t.profiles.sectionTag}>
+        <div class="profile-nav-bar">
+          <div class="profile-nav-tabs" role="tablist" aria-label="Selector de perfiles">
+            {t.profiles.items.map((p, idx) => (
+              <button
+                type="button"
+                role="tab"
+                class={`profile-tab ${idx === 0 ? 'is-active' : ''} theme-${p.theme}`}
+                data-slide-index={idx}
+                aria-selected={idx === 0 ? 'true' : 'false'}
+                aria-controls={`profile-slide-${idx}`}
+                id={`profile-tab-${idx}`}
+              >
+                <span class="tab-indicator" aria-hidden="true"></span>
+                <span class="tab-num">0{idx + 1}</span>
+                <span class="tab-label">{p.id === 'arc-raiders' ? 'ARC RAIDERS' : 'GTA VI'}</span>
+              </button>
+            ))}
+          </div>
+
+          <div class="profile-arrows" aria-label="Carousel navigation">
+            <button type="button" class="profile-arrow prev" data-dir="prev" aria-label={lang === 'es' ? 'Perfil anterior' : 'Previous profile'}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span class="profile-counter mono" aria-live="polite">
+              <span class="curr-num">01</span> / 0{t.profiles.items.length}
+            </span>
+            <button type="button" class="profile-arrow next" data-dir="next" aria-label={lang === 'es' ? 'Perfil siguiente' : 'Next profile'}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-slides-track">
+          {t.profiles.items.map((p, idx) => (
+            <div
+              class={`profile-slide ${idx === 0 ? 'is-active' : ''} theme-${p.theme}`}
+              id={`profile-slide-${idx}`}
+              role="tabpanel"
+              aria-labelledby={`profile-tab-${idx}`}
+              aria-hidden={idx === 0 ? 'false' : 'true'}
+            >
+              <img
+                src={`${base}${p.imgSrc}`}
+                alt={p.imgAlt}
+                width="1024"
+                height="571"
+                loading={idx === 0 ? 'eager' : 'lazy'}
+              />
+              <span class={`raider-tag ${p.theme === 'cyan' ? 'tag-cyan' : ''}`}>{p.tag}</span>
+              <div class={`raider-cap ${p.theme === 'cyan' ? 'cap-cyan' : ''}`}>
+                <h2>{p.title}</h2>
+                <p>{p.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -409,6 +453,108 @@ const jsonLd = {
         el.style.transitionDelay = `${(i % 4) * 70}ms`;
         io.observe(el);
       });
+
+      // Profile carousel switcher
+      const carousel = document.querySelector<HTMLElement>('.profile-carousel');
+      if (carousel) {
+        const slides = Array.from(carousel.querySelectorAll<HTMLElement>('.profile-slide'));
+        const tabs = Array.from(carousel.querySelectorAll<HTMLButtonElement>('.profile-tab'));
+        const prevBtn = carousel.querySelector<HTMLButtonElement>('.profile-arrow.prev');
+        const nextBtn = carousel.querySelector<HTMLButtonElement>('.profile-arrow.next');
+        const counter = carousel.querySelector<HTMLElement>('.curr-num');
+        let currentIndex = 0;
+        let timer: ReturnType<typeof setInterval> | null = null;
+
+        const setSlide = (idx: number) => {
+          currentIndex = (idx + slides.length) % slides.length;
+          slides.forEach((s, i) => {
+            const isActive = i === currentIndex;
+            s.classList.toggle('is-active', isActive);
+            s.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+          });
+          tabs.forEach((t, i) => {
+            const isActive = i === currentIndex;
+            t.classList.toggle('is-active', isActive);
+            t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+          if (counter) {
+            counter.textContent = `0${currentIndex + 1}`;
+          }
+        };
+
+        const startAuto = () => {
+          if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            timer = setInterval(() => {
+              setSlide(currentIndex + 1);
+            }, 5000);
+          }
+        };
+
+        const stopAuto = () => {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+        };
+
+        const restartAuto = () => {
+          stopAuto();
+          startAuto();
+        };
+
+        tabs.forEach((tab, i) => {
+          tab.addEventListener('click', () => {
+            setSlide(i);
+            restartAuto();
+          });
+        });
+
+        prevBtn?.addEventListener('click', () => {
+          setSlide(currentIndex - 1);
+          restartAuto();
+        });
+
+        nextBtn?.addEventListener('click', () => {
+          setSlide(currentIndex + 1);
+          restartAuto();
+        });
+
+        carousel.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') {
+            setSlide(currentIndex - 1);
+            restartAuto();
+          } else if (e.key === 'ArrowRight') {
+            setSlide(currentIndex + 1);
+            restartAuto();
+          }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        carousel.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        carousel.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchEndX - touchStartX;
+          if (Math.abs(diff) > 40) {
+            if (diff < 0) {
+              setSlide(currentIndex + 1);
+            } else {
+              setSlide(currentIndex - 1);
+            }
+            restartAuto();
+          }
+        }, { passive: true });
+
+        carousel.addEventListener('mouseenter', stopAuto);
+        carousel.addEventListener('mouseleave', () => {
+          if (!timer) startAuto();
+        });
+
+        startAuto();
+      }
     </script>
   </body>
 </html>
